@@ -1,6 +1,7 @@
 import javax.servlet.*;
 
 public class ServletTest implements Servlet {
+
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
 
