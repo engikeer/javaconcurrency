@@ -21,6 +21,8 @@ public class SynchronizedDemo {
         Thread writeThread = new Thread(sd::write);
         writeThread.start();
         readThread.start();
+
+        TestInterface<InterruptedException> st = () -> Thread.sleep(3000);
     }
 //    private class CThread extends Thread {
 //        private boolean flag;
