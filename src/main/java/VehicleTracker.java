@@ -8,7 +8,8 @@ public class VehicleTracker {
     private final Map<String, MutablePoint> locations;
 
     public VehicleTracker(Map<String, MutablePoint> locations) {
-        this.locations = deepCopy(locations);
+//        this.locations = deepCopy(locations);
+        this.locations = new HashMap<>();
     }
 
     public synchronized MutablePoint getLocation(String id) {
@@ -23,6 +24,7 @@ public class VehicleTracker {
         Map<String, MutablePoint> map = new HashMap<>();
         map.put("A", p);
 
+        // 修改线程
         Thread thread1 = new Thread(() -> {
             try {
                 Thread.sleep(1500);
@@ -32,6 +34,7 @@ public class VehicleTracker {
             } catch (Exception e) {}
         });
 
+        // 拷贝线程
         Thread thread2 = new Thread(() -> {
             VehicleTracker vehicleTracker = new VehicleTracker(map);
             MutablePoint mp = vehicleTracker.getLocation("A");
@@ -56,6 +59,8 @@ class MutablePoint {
 
     public MutablePoint() {x = 0; y = 0;}
 
+//    // 非线程安全的拷贝构造方法，由于两个状态值不是同时捕获的
+//    // 可能在捕获 x 之后， y 被其他线程修改，导致捕获的不一致的 x 和 y
 //    public MutablePoint(MutablePoint p) {
 //        this.x = p.x;
 //        try {
@@ -65,11 +70,9 @@ class MutablePoint {
 //        }
 //        this.y = p.y;
 //    }
-//    public MutablePoint(int x, int y) {
-//        this.x = x;
-//        this.y = y;
-//    }
 
+    // 通过私有构造函数改变参数形式，从接收一个实例变为接收一组基本变量值
+    // 基本变量值不会被线程共享
     private MutablePoint(int[] a) {
         this.x = a[0];
         try {
@@ -80,10 +83,12 @@ class MutablePoint {
         this.y = a[1];
     }
 
+    // 安全的拷贝构造函数
     public MutablePoint(MutablePoint p) {
         this(p.get());
     }
 
+    // 通过同步的 get 方法同时捕获 x 和 y
     public synchronized int[] get() {
         return new int[] {x, y};
     }
