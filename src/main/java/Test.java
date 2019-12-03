@@ -1,7 +1,6 @@
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.*;
 
 public class Test {
 
@@ -10,18 +9,24 @@ public class Test {
         list.add(1);
         list.add(2);
         list.add(3);
+        Throwable throwable  = new Throwable();
+        Callable<String> callable = () -> new Object().toString();
 
         Map<String, Integer> map = new ConcurrentHashMap<>();
         map.put("A", 1);
 
 
-
-        Thread thread1 = new Thread(() -> {
+        Thread thread1 = new Thread((Runnable) () -> {
             try {
-                Thread.sleep(500);
+                try {
+                    Thread.sleep(500);
+                } finally {
+
+                }
             } catch (Exception e) {
 
             }
+
 //            list.set(0, 100);
             map.put("A", 100);
         });
@@ -40,9 +45,6 @@ public class Test {
         thread1.start();
 
 
-
     }
-
-
-
 }
+
