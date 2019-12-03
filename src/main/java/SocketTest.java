@@ -1,8 +1,5 @@
 import java.io.*;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.concurrent.CountDownLatch;
 
 public class SocketTest {
@@ -14,8 +11,10 @@ public class SocketTest {
             try {
                 startGate.await();
 
-                ServerSocket ss = new ServerSocket(8888);
+                ServerSocket ss = new ServerSocket();
+
                 System.out.println("启动服务器....");
+                ss.bind(new InetSocketAddress(8888));
                 Thread.sleep(2000);
                 System.out.println("服务器接受消息");
                 Socket s = ss.accept();
